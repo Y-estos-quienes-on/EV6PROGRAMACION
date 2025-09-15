@@ -1,40 +1,50 @@
 class Usuario: 
-    def __init__(self, usuario, email, contraseña, rol): 
+    ROLES_VALIDOS = ["general", "admin", "invitado"]
+    
+    def __init__(self, usuario, email, contraseña, rol):
         self.usuario = usuario
         self._email = email
-        self.__contraseña = contraseña
+        self.__contraseña = None
+        self.cambiar_contraseña(contraseña)
         self._rol = rol
 
-    def registrar(self):
-        return f"Usuario {self.usuario} está registrado como {self._rol}"
-
-    def iniciar_sesion(self, usuario, contraseña):
-        if self.usuario == usuario and self.__contraseña == contraseña:
-            return True
-        return False        
-
-    def consultar_datos(self):
-        return{
-        "usuario": self.usuario, 
-        "email": self._email,
-        "rol": self._rol,
-
-        }
-
-    def get_usuario(self):
+    @property
+    def usuario(self):
         return self.usuario
 
-    def set_usuario(self, usuario):
-        self.usuario = usuario
+    @usuario.setter 
+    def usuario(self, valor): 
+        if not valor or valor.strip() == "":
+            raise ValueError("El nombre de usuario no puede estar vacío")
+        self.usuario = valor
 
-    def get_email(self):
-        return self._email
+    @property
+    def email(self):
+        return self.email
+    
+    @email.setter 
+    def email(self,valor):
+        if "@" not in valor or "."not in valor:
+            raise ValueError("Email inválido")
+        self.email = valor
 
-    def set_email(self, email):
-        self._email = email
-
-    def get_rol(self):
-        return self._rol
-
-    def set_rol(self, rol):
-        self._rol = rol
+    @property
+    def rol(self):
+        return self.rol
+    
+    def registrar(self):
+        return f"Usuario {self.usuario} está registrado como {self.rol}"
+    
+    def iniciar_sesion(self, usuario, contraseña):
+        return self.usuario == usuario and self.__contraseña == contraseña
+    
+    def consultar_datos(self):
+        return {
+            "usuario": self.usuario,
+            "email": self.email,
+            "rol": self.rol 
+        }
+    def cambiar_contraseña(self, nueva_contraseña):
+        if len(nueva_contraseña) <4:
+            raise ValueError("La contraseña es demasiado corta")
+        self.__contraseña = nueva_contraseña
