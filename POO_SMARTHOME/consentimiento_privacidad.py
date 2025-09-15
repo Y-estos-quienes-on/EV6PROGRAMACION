@@ -38,7 +38,6 @@ class ConsentimientoPrivacidad:
 
     def set_id_usuario(self, id_usuario):
         self._id_usuario = id_usuario
-        
     def consultar_datos(self):
         return {
             "id_consentimiento": self._id_consentimiento,
