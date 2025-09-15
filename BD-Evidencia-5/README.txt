@@ -1,6 +1,6 @@
 Bienvenidos a esta pequeña guia sobre como generar y visualizar nuestra base de datos en un entorno online.
 
-Para facilitar las pruebas y demostraciones se creo un archivo SQL completo para copiar y pegar, que incluye la estructura de tablas, inserciones de datos y consultas de ejemplo.
+Para facilitar las pruebas y demostraciones se creo un archivo SQL completo "QueryOnline.sql" para copiar y pegar, que incluye la estructura de tablas, inserciones de datos y consultas de ejemplo.
 
 Se recomienda utilizar:
 OneCompiler: https://onecompiler.com/sqlserver
@@ -17,5 +17,6 @@ Pasos para ejecutar el script:
 3) Pegar el contenido del archivo en el área de código.
 4) Hacer clic en "Run" o "Execute".
 5) Ver el output con los resultados de las consultas incluidas en el script.
+
 
 Y eso seria todo, espero logren visualizarlo correctamente y les guste nuestro trabajo!
