@@ -5,7 +5,7 @@ create table Usuario(
 id_usuario int identity(1,1) primary key,
 usuario  varchar(50) not null unique,
 email varchar(80) not null unique,
-contraseña varchar(30) not null,
+contraseÃ±a varchar(30) not null,
 rol varchar(50) default 'General',
 )
 create table ConsentimientoPrivacidad(
