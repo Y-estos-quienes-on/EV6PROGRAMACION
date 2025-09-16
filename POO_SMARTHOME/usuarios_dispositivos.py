@@ -1,7 +1,27 @@
 class UsuariosDispositivos:
     def __init__(self, id_usuario, dispositivos=None):
-        self._id_usuario = id_usuario
+        self.id_usuario = id_usuario
         self._dispositivos = dispositivos if dispositivos is not None else []
+
+    @property
+    def id_usuario(self):
+        return self._id_usuario
+
+    @id_usuario.setter
+    def id_usuario(self, valor):
+        if not valor or str(valor).strip() == "":
+            raise ValueError("El id de usuario no puede estar vacío")
+        self._id_usuario = valor
+
+    @property
+    def dispositivos(self):
+        return self._dispositivos
+
+    @dispositivos.setter
+    def dispositivos(self, lista):
+        if not isinstance(lista, list):
+            raise ValueError("Los dispositivos deben estar en una lista")
+        self._dispositivos = lista
 
     def agregar_dispositivo(self, dispositivo):
         if dispositivo not in self._dispositivos:
@@ -13,21 +33,11 @@ class UsuariosDispositivos:
 
     def consultar_datos(self):
         return {
-            "id_usuario": self._id_usuario,
-            "dispositivos": self._dispositivos
+            "id_usuario": self.id_usuario,
+            "dispositivos": self.dispositivos
         }
 
-    def get_id_usuario(self):
-        return self._id_usuario
-
-    def set_id_usuario(self, id_usuario):
-        self._id_usuario = id_usuario
-
-    def get_dispositivos(self):
-        return self._dispositivos
-
-    def set_dispositivos(self, dispositivos):
-        self._dispositivos = dispositivos
-
     def mostrar_info(self):
-        return f"Usuario {self._id_usuario} tiene los dispositivos: {', '.join(map(str, self._dispositivos))}"
+        if not self._dispositivos:
+            return f"Usuario {self.id_usuario} no tiene dispositivos registrados"
+        return f"Usuario {self.id_usuario} tiene los dispositivos: {', '.join(map(str, self._dispositivos))}"

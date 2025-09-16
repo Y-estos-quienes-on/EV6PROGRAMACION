@@ -1,34 +1,32 @@
-import unittest
+import pytest
 from POO_SMARTHOME.usuarios_dispositivos import UsuariosDispositivos
 
-class TestUsuariosDispositivos(unittest.TestCase):
+@pytest.fixture
+def usuarios_disp():
+    return UsuariosDispositivos(2, ["Lampara", "Cafetera"])
 
-    def setUp(self):
-        self.usuarios_disp = UsuariosDispositivos(2, ["Lampara", "Cafetera"])
+def test_agregar_dispositivo(usuarios_disp):
+    usuarios_disp.agregar_dispositivo("Alarma Patio")
+    assert "Alarma Patio" in usuarios_disp.dispositivos
+    # No debería duplicar Lampara
+    usuarios_disp.agregar_dispositivo("Lampara")
+    assert usuarios_disp.dispositivos.count("Lampara") == 1
 
-    def test_agregar_dispositivo(self):
-        self.usuarios_disp.agregar_dispositivo("Alarma Patio")
-        self.assertIn("Alarma Patio", self.usuarios_disp.get_dispositivos())
-        self.usuarios_disp.agregar_dispositivo("Lampara")
-        self.assertEqual(self.usuarios_disp.get_dispositivos().count("Lampara"), 1)
+def test_quitar_dispositivo(usuarios_disp):
+    usuarios_disp.quitar_dispositivo("Lampara")
+    assert "Lampara" not in usuarios_disp.dispositivos
+    # Quitar un dispositivo que no está no debe dar error
+    usuarios_disp.quitar_dispositivo("Microondas")
 
-    def test_quitar_dispositivo(self):
-        self.usuarios_disp.quitar_dispositivo("Lampara")
-        self.assertNotIn("Lampara", self.usuarios_disp.get_dispositivos())
-        self.usuarios_disp.quitar_dispositivo("Microondas")
+def test_consultar_datos(usuarios_disp):
+    datos = usuarios_disp.consultar_datos()
+    assert datos["id_usuario"] == 2
+    assert datos["dispositivos"] == ["Lampara", "Cafetera"]
 
-    def test_consultar_datos(self):
-        datos = self.usuarios_disp.consultar_datos()
-        self.assertEqual(datos["id_usuario"], 2)
-        self.assertEqual(datos["dispositivos"], ["Lampara", "Cafetera"])
+def test_id_usuario_property(usuarios_disp):
+    usuarios_disp.id_usuario = 5
+    assert usuarios_disp.id_usuario == 5
 
-    def test_get_set_id_usuario(self):
-        self.usuarios_disp.set_id_usuario(2)
-        self.assertEqual(self.usuarios_disp.get_id_usuario(), 2)
-
-    def test_get_set_dispositivos(self):
-        self.usuarios_disp.set_dispositivos(["Termotanque"])
-        self.assertEqual(self.usuarios_disp.get_dispositivos(), ["Termotanque"])
-
-if __name__ == "__main__":
-    unittest.main()
+def test_dispositivos_property(usuarios_disp):
+    usuarios_disp.dispositivos = ["Termotanque"]
+    assert usuarios_disp.dispositivos == ["Termotanque"]
