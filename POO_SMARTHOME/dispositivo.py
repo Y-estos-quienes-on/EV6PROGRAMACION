@@ -16,7 +16,7 @@ class GestorDispositivos:
     def __init__(self):
         self.dispositivos: List[Dispositivo] = []
     
-    def agregar_dispositivo(self, nombre: str, tipo: str, estado: str = "apagado") -> Dispositivo:
+    def agregar_dispositivo(self, nombre: str, tipo: str, estado: str = "apagado"):
      
         if self.buscar_por_nombre(nombre):
             raise ValueError(f"Ya existe un dispositivo con nombre '{nombre}'")
