@@ -33,12 +33,12 @@ def test_cambiar_contraseña_insegura(user):
         user.cambiar_contraseña("123")  
     assert "La contraseña es demasiado corta" in str(excinfo.value)
 
-def test_email_invalido():
+def test_email_invalido(user):
     with pytest.raises(ValueError) as excinfo:
-        Usuario("Paola", "email_sin_arroba", "1234", "general")
+        user.email = "email_sin_arroba"
     assert "Email inválido" in str(excinfo.value)
 
-def test_usuario_vacio():
+def test_usuario_vacio(user):
     with pytest.raises(ValueError) as excinfo:
-        Usuario("", "pao2@gmail.com", "1234", "general")
+        user.usuario = ""
     assert "El nombre de usuario no puede estar vacío" in str(excinfo.value)
