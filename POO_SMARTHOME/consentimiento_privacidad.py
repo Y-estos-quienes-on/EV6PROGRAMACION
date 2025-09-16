@@ -2,11 +2,11 @@ from datetime import datetime
 
 class ConsentimientoPrivacidad:
     def __init__(self, acepta_politicas, fecha, id_usuario, id_consentimiento):
-        self.id_consentimiento = id_consentimiento  # usa setters
+        self.id_consentimiento = id_consentimiento
         self.acepta_politicas = acepta_politicas
         self.fecha = fecha
         self.id_usuario = id_usuario
-        
+
     @property
     def id_consentimiento(self):
         return self._id_consentimiento

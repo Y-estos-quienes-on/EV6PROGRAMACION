@@ -8,14 +8,12 @@ def usuarios_disp():
 def test_agregar_dispositivo(usuarios_disp):
     usuarios_disp.agregar_dispositivo("Alarma Patio")
     assert "Alarma Patio" in usuarios_disp.dispositivos
-    # No debería duplicar Lampara
     usuarios_disp.agregar_dispositivo("Lampara")
     assert usuarios_disp.dispositivos.count("Lampara") == 1
 
 def test_quitar_dispositivo(usuarios_disp):
     usuarios_disp.quitar_dispositivo("Lampara")
     assert "Lampara" not in usuarios_disp.dispositivos
-    # Quitar un dispositivo que no está no debe dar error
     usuarios_disp.quitar_dispositivo("Microondas")
 
 def test_consultar_datos(usuarios_disp):
