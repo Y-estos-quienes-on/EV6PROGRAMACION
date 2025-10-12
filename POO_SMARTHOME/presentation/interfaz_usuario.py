@@ -4,7 +4,7 @@ from services.usuario_service import UsuarioService
 
 
 def interfazUsuarioGeneral(usuario: Usuario):
-    #Menu General
+    #MenuGeneral
     while True:
         print("\n--- Menu Usuario ---")
         print("1. Consultar mis datos")
@@ -23,7 +23,7 @@ def interfazUsuarioGeneral(usuario: Usuario):
 
 
 def interfazAdmin(usuario_admin: Administrador, service: UsuarioService):
-    #Menu Admin 
+    #MenuAdmin 
     while True:
         print("\n--- Menu Administrador ---")
         print("1. Consultar usuario")
