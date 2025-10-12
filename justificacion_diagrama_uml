@@ -1,28 +1,36 @@
-Análisis del Diagrama de Clases
-El diagrama representa cuatro entidades principales: Usuario, Administrador, Dispositivo y Automatizacion. 
-•	Clase Usuario: Es la clase base, con atributos como usuario, email, contraseña y rol. Tiene métodos para el manejo de sesiones, datos personales y cambiar la contraseña. 
-•	Clase Administrador: Esta clase hereda de Usuario, lo que indica que un Administrador es un tipo de Usuario. Agrega la funcionalidad específica de modificar_rol().
-•	Clase General: También hereda de Usuario, representando un tipo de usuario estándar. En este diagrama, no se le añaden atributos o métodos específicos, pero su existencia establece una
-jerarquía clara.
-•	Clase Dispositivo: Contiene atributos como id, nombre, tipo y estado. Posee métodos para interactuar con el dispositivo (encender(), apagar(), mostrar_estado()).
-•	Clase Automatizacion: Define reglas con nombre, condiciones y acciones. Su método principal es ejecutar().
+El diagrama de clases representa la estructura orientada a objetos del sistema SmartHome, que permite a los usuarios gestionar dispositivos inteligentes del hogar. 
+Entidades Principales
+Clase Usuario: Es la clase base del sistema. Representa cualquier persona que interactúa con el sistema.
+Clase Administrador: Hereda de Usuario, indicando que un Administrador es un tipo especializado de Usuario. Agrega la funcionalidad específica de modificar_rol(), permitiendo que los administradores gestionen los permisos de otros usuarios.
+Clase General: También hereda de Usuario, representando un tipo de usuario estándar con permisos básicos. Aunque no añade atributos o métodos específicos, su existencia establece una jerarquía clara en el sistema.
+Clase Dispositivo: Representa un dispositivo inteligente del hogar (luces, termostatos, cerraduras, etc.). Posee métodos para interactuar con el dispositivo 
+Clase EstadoDispositivo: Almacena el estado actual de un dispositivo y su historial de cambios
+Clase ConfiguracionDispositivo: Gestiona las configuraciones específicas de cada dispositivo
+Clase ConsentimientoPrivacidad: Gestiona el consentimiento del usuario respecto a políticas de privacidad. 
+Clase UsuariosDispositivos: Actúa como clase puente en la relación muchos a muchos entre Usuarios y Dispositivos. 
+Clase GestorDispositivos: Gestiona el ciclo de vida completo de los dispositivos del sistema. 
+Clase Automatización: Define reglas de automatización con nombre, condiciones y acciones
 Justificación de Relaciones y Principios POO
 1. Herencia
-El diagrama muestra que las clases Administrador y General heredan de la clase Usuario. Este principio permite la reutilización de código y el establecimiento de una jerarquía lógica.
-Ambas subclases (Administrador y General) adquieren automáticamente los atributos (usuario, email, contraseña, rol) y métodos (registrar(), iniciar_sesion(), consultar_datos()) de la 
-superclase Usuario. Esto evita la duplicidad de código y facilita el mantenimiento. Un administrador es un tipo de usuario, lo que hace que esta relación sea intuitiva y eficiente.
+El diagrama muestra que las clases Administrador y General heredan de la clase Usuario. Este principio permite la reutilización de código y el establecimiento de una jerarquía lógica. La flecha de herencia apunta siempre hacia la clase base (Usuario), indicando la dirección de la relación.
+Ambas subclases adquieren automáticamente los atributos y métodos de la superclase Usuario. Esto evita la duplicidad de código y facilita el mantenimiento. Un administrador es un tipo de usuario y un usuario general es también un tipo de usuario, lo que hace que estas relaciones sean intuitivas y eficientes. La especialización permite que cada subclase agregue funcionalidad única sin perder las capacidades heredadas de la clase padre.
 2. Encapsulamiento
-Los atributos de las clases, como -usuario: str  están marcados con un guion (-), lo que en la notación UML indica que son privados. Los métodos, marcados con un más (+), son públicos. 
-Este es el principio de encapsulamiento. Los datos internos de un objeto están protegidos y solo se pueden modificar a través de los métodos públicos definidos para la clase. 
-Esto asegura que el estado del objeto sea siempre consistente y controlado, evitando manipulaciones directas e inesperadas. Por ejemplo, para cambiar el estado de un dispositivo, se debe
-usar el método encender() o apagar(), lo que puede incluir lógicas de validación.
+Algunos atributos de las clases están marcados con un guion (-), lo que en la notación UML indica que son privados. Los métodos, marcados con un más (+), son públicos. Este es el principio de encapsulamiento.
+Los datos internos de un objeto están protegidos y solo se pueden modificar a través de los métodos públicos definidos para la clase. Esto asegura que el estado del objeto sea siempre consistente y controlado, evitando manipulaciones directas e inesperadas.
+Por ejemplo, para cambiar la contraseña de un usuario, se debe usar el método cambiar_contraseña(), que puede incluir lógicas de validación de seguridad (longitud mínima, caracteres especiales, etc.). De la misma manera, los atributos privados de EstadoDispositivo (-_estado_actual, -_ultima_actualizacion) solo se modifican a través del método actualizar_estado(), garantizando que siempre se registre la hora de cambio.
 3. Agregación
-La relación entre Usuario y Dispositivo está marcada con un rombo vacío (-◇), que representa una agregación. La agregación indica una relación de "posee un" o "contiene", donde el objeto
-"parte" puede existir de forma independiente del objeto "todo". En este caso, un Usuario posee varios Dispositivos (1..*), pero un Dispositivo puede existir sin ser propiedad de un 
-Usuario (por ejemplo, antes de ser configurado o si se transfiere a otro usuario). La vida de un dispositivo no depende de la vida del usuario.
+La agregación indica una relación de "posee un" o "contiene", donde el objeto "parte" puede existir de forma independiente del objeto "todo".
+La relación Usuario y UsuariosDispositivos (1 a *) es una agregación, donde un usuario puede estar asociado a múltiples dispositivos a través de la clase puente. El usuario "posee" o controla esos dispositivos, pero los dispositivos pueden transferirse a otros usuarios o existir en el sistema sin ser asignados.
 4. Composición
-La relación entre Dispositivo y Automatizacion está marcada con un rombo sólido (-◆), que representa una composición. La composición es un tipo de agregación más fuerte. 
-Indica que el objeto "parte" no puede existir sin el objeto "todo". Una Automatizacion es una parte de un Dispositivo; no tiene sentido que una regla de automatización exista por sí 
-sola si no está asociada a un dispositivo específico. Si se elimina un Dispositivo, todas las Automatizaciones asociadas a él deben ser eliminadas también, ya que dependen directamente 
-de él.
-
+La relación entre GestorDispositivos y Dispositivo está marcada con un rombo sólido (◆), que representa una composición. La composición es un tipo de agregación más fuerte. Indica que el objeto "parte" no puede existir sin el objeto "todo".
+Un Dispositivo es gestionado por un GestorDispositivos; su ciclo de vida está completamente ligado al gestor. Si se elimina el GestorDispositivos, todos los Dispositivos bajo su control deben ser eliminados también, ya que dependen directamente de él para ser gestionados. La cardinalidad 1 a * indica que un gestor puede controlar múltiples dispositivos.
+5. Asociaciones Uno a Uno
+Las relaciones entre Dispositivo y EstadoDispositivo, y entre Dispositivo y ConfiguracionDispositivo, son asociaciones uno a uno (1 a 1). Esto significa que cada Dispositivo tiene exactamente un estado actual y una configuración específica.
+Estas asociaciones garantizan que la información sobre el estado y la configuración de un dispositivo esté siempre sincronizada y actualizada. Cada objeto Dispositivo debe tener su correspondiente EstadoDispositivo y ConfiguracionDispositivo para funcionar correctamente.
+6. Relación Muchos a Muchos
+La relación entre Usuario y Dispositivo es una asociación muchos a muchos mediada por la clase UsuariosDispositivos. Esto significa que un Usuario puede tener múltiples Dispositivos y un Dispositivo puede pertenecer a múltiples Usuarios. La clase UsuariosDispositivos actúa como tabla de unión, permitiendo modelar esta complejidad de forma clara. Contiene referencias a id_usuario y una lista de dispositivos, facilitando las operaciones de agregar o quitar dispositivos del usuario.
+Principios de Diseño Aplicados
+Reutilización de Código: La herencia de Administrador y General desde Usuario evita duplicar código y facilita cambios futuros en la clase base.
+Separación de Responsabilidades: Cada clase tiene un propósito específico bien definido. 
+Flexibilidad y Extensibilidad: El uso de asociaciones y composiciones permite que el sistema sea fácilmente extensible. Se pueden agregar nuevas automatizaciones, dispositivos o usuarios sin afectar otras partes del sistema.
+Integridad de Datos: El encapsulamiento y la composición garantizan que los datos se mantengan en un estado consistente y que las dependencias entre objetos se respeten.
