@@ -1,4 +1,3 @@
-Análisis del Diagrama de Clases
 El diagrama de clases representa la estructura orientada a objetos del sistema SmartHome, que permite a los usuarios gestionar dispositivos inteligentes del hogar. 
 Entidades Principales
 Clase Usuario: Es la clase base del sistema. Representa cualquier persona que interactúa con el sistema.
