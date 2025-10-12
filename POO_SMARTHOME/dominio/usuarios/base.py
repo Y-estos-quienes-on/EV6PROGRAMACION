@@ -1,17 +1,18 @@
-import hashlib #La usamos para codificar la contraseña
+import hashlib
 
 class Usuario:
-    ROLES_VALIDOS = ["general", "admin", "invitado"]
+    ROLES_VALIDOS = ["general", "admin"]
 
     def __init__(self, usuario, email, contraseña, rol="general"):
         self._usuario = usuario
         self._email = email
         self.__contraseña = None
-        self.cambiar_contraseña(contraseña)#Obligamos a que se valide la contraseña al momento de registro
+        self.cambiar_contraseña(contraseña)
         if rol not in self.ROLES_VALIDOS:
-            raise ValueError(f"Rol invalido: {rol}")
+            raise ValueError(f"Rol inválido: {rol}")
         self._rol = rol
 
+    #Propiedades
     @property
     def usuario(self):
         return self._usuario
@@ -36,24 +37,27 @@ class Usuario:
     def rol(self):
         return self._rol
 
+    #Metodos
+
+    #Chequea  credenciales ingresadas con las del usuario
     def iniciar_sesion(self, usuario, contraseña):
-        return self._usuario == usuario and self.__contraseña == hashlib.sha256(contraseña.encode()).hexdigest()
-
+        return (
+            self._usuario == usuario and
+            self.__contraseña == hashlib.sha256(contraseña.encode()).hexdigest()
+        )
+    #Devuelve datos del usuario
     def consultar_datos(self):
-        return {"usuario": self._usuario, "email": self._email, "rol": self._rol}
-
+        return {
+            "usuario": self._usuario,
+            "email": self._email,
+            "rol": self._rol
+        }
+    #Valida y encripta la nueva contraseña del usuario
     def cambiar_contraseña(self, nueva_contraseña):
         if len(nueva_contraseña) < 5:
             raise ValueError("La contraseña es demasiado corta")
         self.__contraseña = hashlib.sha256(nueva_contraseña.encode()).hexdigest()
 
-
-class Administrador(Usuario):
-    def modificar_rol(self, usuario, nuevo_rol):
-        if nuevo_rol not in Usuario.ROLES_VALIDOS:
-            raise ValueError("Rol invalido")
-        usuario._rol = nuevo_rol
-
-
-class General(Usuario):
-    pass
+    #Devuelve la contraseña encriptada
+    def get_hash_contraseña(self):
+        return self.__contraseña

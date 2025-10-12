@@ -1,6 +1,10 @@
 from dominio.usuarios.base import Usuario
 
 class Administrador(Usuario):
-    #Ejemplo de Metodo de administrador, revisar y agregar los correspondientes
-    def modificar_rol(self, usuario, nuevo_rol):
-        usuario.rol = nuevo_rol
+    def __init__(self, usuario, email, contraseña):
+        super().__init__(usuario, email, contraseña, rol="admin")
+
+    def modificar_rol(self, otro_usuario, nuevo_rol):
+        if nuevo_rol not in Usuario.ROLES_VALIDOS:
+            raise ValueError("Rol invalido")
+        otro_usuario._rol = nuevo_rol

@@ -1,9 +1,15 @@
-from dominio.usuarios.base import Usuario
-from dao.usuario_dao import UsuarioDAO
-from interfaces.interfaz_usuario import interfazUsuarioGeneral, interfazAdmin
+from services.usuario_service import UsuarioService
+from interfaces.interfaz_usuario import interfazAdmin, interfazUsuarioGeneral
 
 def main():
-    dao = UsuarioDAO()
+    service = UsuarioService()
+
+    #Crear admin por defecto si no existe
+    admin_inicial = service.iniciar_sesion("admin", "admin123")
+    if not admin_inicial:
+        print("Creando usuario admin por defecto...")
+        service.registrar_usuario("admin", "admin@mail.com", "admin123", rol="admin")
+        print("Usuario admin creado con usuario='admin' y contraseña='admin123'")
 
     while True:
         print("\n=== Sistema de Usuarios ===")
@@ -16,23 +22,20 @@ def main():
             nombre = input("Usuario: ").strip()
             email = input("Email: ").strip()
             contraseña = input("Contraseña: ").strip()
-            try:
-                u = Usuario(nombre, email, contraseña)
-                dao.agregarUsuario(u)
-                print(f"Usuario {nombre} registrado correctamente.")
-            except ValueError as e:
-                print(f"Error: {e}")
+            rol = input("Rol (general/admin, opcional, default=general): ").strip().lower() or "general"
+            print(service.registrar_usuario(nombre, email, contraseña, rol=rol))
 
         elif opcion == "2":
             nombre = input("Usuario: ").strip()
             contraseña = input("Contraseña: ").strip()
-            u = dao.obtenerUsuario(nombre)
-            if u and u.iniciar_sesion(nombre, contraseña):
-                print(f"\n¡Bienvenido {u.usuario}!")
-                if u.rol == "admin":
-                    interfazAdmin(u, dao)
+            usuario = service.iniciar_sesion(nombre, contraseña)
+
+            if usuario:
+                print(f"\nBienvenido {usuario.usuario}!")
+                if usuario.rol == "admin":
+                    interfazAdmin(usuario, service)
                 else:
-                    interfazUsuarioGeneral(u)
+                    interfazUsuarioGeneral(usuario)
             else:
                 print("Usuario o contraseña incorrectos.")
 
@@ -40,7 +43,7 @@ def main():
             print("Saliendo del sistema...")
             break
         else:
-            print("Opción inválida. Intente nuevamente.")
+            print("Opción invalida. Intente nuevamente.")
 
 if __name__ == "__main__":
     main()
