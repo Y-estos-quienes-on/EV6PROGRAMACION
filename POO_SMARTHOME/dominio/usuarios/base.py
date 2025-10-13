@@ -1,18 +1,15 @@
-import hashlib
-
 class Usuario:
     ROLES_VALIDOS = ["general", "admin"]
 
     def __init__(self, usuario, email, contraseña, rol="general"):
-        self._usuario = usuario
-        self._email = email
-        self.__contraseña = None
-        self.cambiar_contraseña(contraseña)
-        if rol not in self.ROLES_VALIDOS:
-            raise ValueError(f"Rol inválido: {rol}")
-        self._rol = rol
+        self._usuario = None
+        self._email = None
+        self._contraseña = None
+        self.usuario = usuario
+        self.email = email
+        self._contraseña = contraseña
+        self._rol = rol if rol in self.ROLES_VALIDOS else "general"
 
-    #Propiedades
     @property
     def usuario(self):
         return self._usuario
@@ -20,7 +17,7 @@ class Usuario:
     @usuario.setter
     def usuario(self, valor):
         if not valor.strip():
-            raise ValueError("El nombre de usuario no puede estar vacio")
+            raise ValueError("El nombre de usuario no puede estar vacío")
         self._usuario = valor
 
     @property
@@ -30,34 +27,24 @@ class Usuario:
     @email.setter
     def email(self, valor):
         if "@" not in valor or "." not in valor:
-            raise ValueError("Email invalido")
+            raise ValueError("Email inválido")
         self._email = valor
 
     @property
     def rol(self):
         return self._rol
 
-    #Metodos
-
-    #Chequea  credenciales ingresadas con las del usuario
     def iniciar_sesion(self, usuario, contraseña):
-        return (
-            self._usuario == usuario and
-            self.__contraseña == hashlib.sha256(contraseña.encode()).hexdigest()
-        )
-    #Devuelve datos del usuario
+        return self._usuario == usuario and self._contraseña == contraseña
+
     def consultar_datos(self):
         return {
             "usuario": self._usuario,
             "email": self._email,
             "rol": self._rol
         }
-    #Valida y encripta la nueva contraseña del usuario
-    def cambiar_contraseña(self, nueva_contraseña):
-        if len(nueva_contraseña) < 5:
-            raise ValueError("La contraseña es demasiado corta")
-        self.__contraseña = hashlib.sha256(nueva_contraseña.encode()).hexdigest()
 
-    #Devuelve la contraseña encriptada
-    def get_hash_contraseña(self):
-        return self.__contraseña
+    def cambiar_contraseña(self, nueva_contraseña):
+        if len(nueva_contraseña) < 4:
+            raise ValueError("La contraseña es demasiado corta")
+        self._contraseña = nueva_contraseña
