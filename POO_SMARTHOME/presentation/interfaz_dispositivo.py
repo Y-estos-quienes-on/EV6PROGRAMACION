@@ -1,73 +1,61 @@
-def interfazDispositivosUsuarioGeneral():
+from services.dispositivo_service import DispositivoService
 
-    while True: 
-        print ("\n" + "="*50)
-        print ("MIS DISPOSITIVOS")
-        print ("="*50)
-        print ("1. Ver mis dispositivos")
-        print ("2. Volver atrás")
-        print ("="*50)
 
-        opcion = input("Seleccione una opción:").strip()
-
-        if opcion == "1": 
-            print("\n Dispositivos disponibles:")
-            print("-Lámpara Cocina (luz)- Apagada")
-            print("Cámara patio (cámara)- Encendida")
-
-        elif opcion == "2":
-            print ("Volviendo al menú principal")
-            break
-
-        else: 
-            print ("Opción inválida")
-
-def interfazDispositivosAdmin(): 
-
-    while True: 
-        print ("\n" + "="*50)
-        print ("GESTIONAR DISPOSITIVOS")
-        print ("\n" + "="*50)
-        print ("1. Agregar dispositivo")
-        print ("2. Ver todos los dispositivos")
-        print ("3. Cambiar Estado")
-        print ("4. Eliminar dispositivo")
-        print ("5. Volver atrás")
-        print ("\n" + "="*50)
-
+def interfazDispositivosUsuarioGeneral(usuario, dispositivo_service: DispositivoService):
+    while True:
+        print("\n=== Mis Dispositivos ===")
+        print("1. Ver mis dispositivos")
+        print("2. Volver atrás")
         opcion = input("Seleccione una opción: ").strip()
 
         if opcion == "1":
-            print ("\n AGREGAR DISPOSITIVO")
-            nombre = input("Nombre: ").strip()
-            tipo = input("Tipo (luz, cámara, etc.); ").strip()
-            print (f"Dispositivo {nombre} agregado")
+            dispositivos = dispositivo_service.listar_dispositivos()
+            if not dispositivos:
+                print("No tienes dispositivos asignados.")
+            else:
+                for d in dispositivos:
+                    print(f"ID:{d['id']} - {d['nombre']} ({d['tipo']}) - Estado: {d['estado']} - Config: {d['configuracion']}")
+        elif opcion == "2":
+            break
+        else:
+            print("Opción inválida. Intente de nuevo.")
+
+def interfazDispositivosAdmin(admin_usuario, dispositivo_service: DispositivoService):
+    while True:
+        print("\n=== Gestión de Dispositivos ===")
+        print("1. Agregar dispositivo")
+        print("2. Ver todos los dispositivos")
+        print("3. Cambiar estado de un dispositivo")
+        print("4. Eliminar dispositivo")
+        print("5. Volver atrás")
+        opcion = input("Seleccione una opción: ").strip()
+
+        if opcion == "1":
+            nombre = input("Nombre del dispositivo: ").strip()
+            tipo = input("Tipo (luz, cámara, etc.): ").strip()
+            msg = dispositivo_service.registrar_dispositivo(nombre, tipo)
+            print(msg)
 
         elif opcion == "2":
-            print("\n TODOS LOS DISPOSITIVOS:")
-            print("Lámpara coocina (luz) -Apagada")
-            print("Cámara patio (cámara) - Encendida")
+            dispositivos = dispositivo_service.listar_dispositivos()
+            if not dispositivos:
+                print("No hay dispositivos registrados.")
+            else:
+                for d in dispositivos:
+                    print(f"ID:{d['id']} - {d['nombre']} ({d['tipo']}) - Estado: {d['estado']} - Config: {d['configuracion']}")
 
-        elif opcion == "3": 
-            print("\n CAMBIAR ESTADO")
-            nombre = input("Nombre del dispositivo: ").strip()
+        elif opcion == "3":
+            id_disp = int(input("ID del dispositivo: "))
             nuevo_estado = input("Nuevo estado (encendido/apagado): ").strip()
-            print(f"El estado de {nombre} cambió a {nuevo_estado}")
+            resultado = dispositivo_service.actualizar_dispositivo(id_disp, estado=nuevo_estado)
+            print(resultado)
 
-        elif opcion =="4": 
-            print("\n ELIMINAR DISPOSITIVO")
-            nombre = input("Nombre del dispositivo: ").strip()
-            confirmacion = input (f"¿Desea eliminar {nombre} ? S / N: ").strip
-            if confirmacion == "S": 
-                print (f"Dispositivo {nombre} eliminado")
-            elif confirmacion == "N":
-                print("Cancelado. Volviendo al menú principal")
-            else: 
-                print("Opción inválida. Ingrese S o N ")
+        elif opcion == "4":
+            id_disp = int(input("ID del dispositivo a eliminar: "))
+            resultado = dispositivo_service.eliminar_dispositivo(id_disp)
+            print(resultado)
 
-        elif opcion == "5": 
-            print("Volviendo al menú principal")
+        elif opcion == "5":
             break
-        
         else:
-            print("Opción inválida")
+            print("Opción inválida. Intente de nuevo.")

@@ -1,3 +1,5 @@
+from services.consentimiento_privacidad_service import ConsentimientoPrivacidadService
+
 class Usuario:
     ROLES_VALIDOS = ["general", "admin"]
 
@@ -8,8 +10,9 @@ class Usuario:
         self.email = email
         self._contraseña = contraseña
         self._rol = rol if rol in self.ROLES_VALIDOS else "general"
+        self.consent_service = ConsentimientoPrivacidadService()
 
-    #Setter/Getter
+    # Setter/Getter
     @property
     def usuario(self):
         return self._usuario
@@ -34,15 +37,19 @@ class Usuario:
     def rol(self):
         return self._rol
 
-    #Metodos
+    # Métodos
     def iniciar_sesion(self, usuario, contraseña):
         return self._usuario == usuario and self._contraseña == contraseña
 
     def consultar_datos(self):
+        # Consultamos el consentimiento usando el método actual
+        consentimiento = self.consent_service.obtener_consentimiento(self.usuario)
+        acepto = "Aceptado" if consentimiento else "No acepto"
         return {
             "usuario": self._usuario,
             "email": self._email,
-            "rol": self._rol
+            "rol": self._rol,
+            "consentimiento_privacidad": acepto
         }
 
     def cambiar_contraseña(self, nueva_contraseña):
