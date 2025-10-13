@@ -1,5 +1,7 @@
 from services.dispositivo_service import DispositivoService
+from services.usuario_dispositivo_service import UsuarioDispositivoService
 
+usuario_dispositivo_service = UsuarioDispositivoService()
 
 def interfazDispositivosUsuarioGeneral(usuario, dispositivo_service: DispositivoService):
     while True:
@@ -9,16 +11,17 @@ def interfazDispositivosUsuarioGeneral(usuario, dispositivo_service: Dispositivo
         opcion = input("Seleccione una opción: ").strip()
 
         if opcion == "1":
-            dispositivos = dispositivo_service.listar_dispositivos()
+            dispositivos, msg = usuario_dispositivo_service.obtener_dispositivos(usuario)
             if not dispositivos:
-                print("No tienes dispositivos asignados.")
+                print(msg)
             else:
                 for d in dispositivos:
-                    print(f"ID:{d['id']} - {d['nombre']} ({d['tipo']}) - Estado: {d['estado']} - Config: {d['configuracion']}")
+                    print(f"ID:{d.id_dispositivo} - {d.nombre} ({d.tipo_dispositivo}) - Estado: {d.estado.estado_actual} - Config: {d.configuracion.configuracion}")
         elif opcion == "2":
             break
         else:
             print("Opción inválida. Intente de nuevo.")
+
 
 def interfazDispositivosAdmin(admin_usuario, dispositivo_service: DispositivoService):
     while True:
@@ -45,13 +48,21 @@ def interfazDispositivosAdmin(admin_usuario, dispositivo_service: DispositivoSer
                     print(f"ID:{d['id']} - {d['nombre']} ({d['tipo']}) - Estado: {d['estado']} - Config: {d['configuracion']}")
 
         elif opcion == "3":
-            id_disp = int(input("ID del dispositivo: "))
+            id_disp = input("ID del dispositivo: ").strip()
+            if not id_disp.isdigit():
+                print("ID inválido.")
+                continue
+            id_disp = int(id_disp)
             nuevo_estado = input("Nuevo estado (encendido/apagado): ").strip()
             resultado = dispositivo_service.actualizar_dispositivo(id_disp, estado=nuevo_estado)
             print(resultado)
 
         elif opcion == "4":
-            id_disp = int(input("ID del dispositivo a eliminar: "))
+            id_disp = input("ID del dispositivo a eliminar: ").strip()
+            if not id_disp.isdigit():
+                print("ID inválido.")
+                continue
+            id_disp = int(id_disp)
             resultado = dispositivo_service.eliminar_dispositivo(id_disp)
             print(resultado)
 

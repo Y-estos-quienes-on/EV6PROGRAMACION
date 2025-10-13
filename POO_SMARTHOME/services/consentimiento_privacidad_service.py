@@ -1,18 +1,14 @@
 from dao.consentimiento_privacidad_dao import ConsentimientoPrivacidadDAO
-from dominio.consentimiento_privacidad import ConsentimientoPrivacidad
 
 class ConsentimientoPrivacidadService:
     def __init__(self):
         self.dao = ConsentimientoPrivacidadDAO()
 
-    def registrar_consentimiento(self, usuario, aceptado: bool):
-        consentimiento = ConsentimientoPrivacidad(usuario, aceptado)
-        self.dao.registrar_consentimiento(usuario, aceptado)
-        return f"Consentimiento para {usuario} registrado."
+    def registrar_consentimiento(self, id_usuario, acepta_politicas):
+        self.dao.registrar_consentimiento(id_usuario, acepta_politicas)
+        
+    def obtener_consentimiento_por_id(self, id_usuario):
+        return self.dao.obtener_consentimiento(id_usuario)
 
-    def obtener_consentimiento(self, usuario):
-        return self.dao.verificar_consentimiento(usuario)
-
-    def cambiar_consentimiento(self, usuario, aceptado: bool):
-        self.dao.actualizar_consentimiento(usuario, aceptado)
-        return f"Consentimiento para {usuario} actualizado a {'aceptado' if aceptado else 'rechazado'}."
+    def actualizar_consentimiento(self, id_usuario, acepta_politicas):
+        self.dao.actualizar_consentimiento(id_usuario, acepta_politicas)

@@ -1,52 +1,47 @@
 from dominio.dispositivos.dispositivo import Dispositivo
-from dao.estado_dispositivo_dao import EstadoDispositivoDAO
-from dao.configuracion_dispositivo_dao import ConfiguracionDispositivoDAO
-from dao.interfaces.i_dispositivo_dao import IDispositivoDAO
 from conn.conn_db import DBConnection
 
-class DispositivoDAO(IDispositivoDAO):
+class DispositivoDAO:
     def __init__(self):
         with DBConnection() as cursor:
             cursor.execute("""
-                CREATE TABLE IF NOT EXISTS dispositivo (
+                CREATE TABLE IF NOT EXISTS Dispositivo (
                     id_dispositivo INTEGER PRIMARY KEY AUTOINCREMENT,
                     nombre TEXT,
                     tipo_dispositivo TEXT,
                     id_estado INTEGER,
-                    id_configuracion INTEGER,
-                    FOREIGN KEY (id_estado) REFERENCES estado_dispositivo(id_estado),
-                    FOREIGN KEY (id_configuracion) REFERENCES configuracion_dispositivo(id_configuracion)
+                    id_configuracion INTEGER
                 )
             """)
 
-    def agregar_dispositivo(self, dispositivo: Dispositivo, id_estado: int, id_config: int) -> int:
+    def agregar_dispositivo(self, dispositivo: Dispositivo, id_estado: int, id_config: int):
         with DBConnection() as cursor:
             cursor.execute(
-                "INSERT INTO dispositivo (nombre, tipo_dispositivo, id_estado, id_configuracion) VALUES (?, ?, ?, ?)",
+                "INSERT INTO Dispositivo (nombre, tipo_dispositivo, id_estado, id_configuracion) VALUES (?, ?, ?, ?)",
                 (dispositivo.nombre, dispositivo.tipo_dispositivo, id_estado, id_config)
             )
             return cursor.lastrowid
 
-    def obtener_dispositivo(self, id_dispositivo: int):
+    def obtener_dispositivo(self, id_dispositivo):
         with DBConnection() as cursor:
             cursor.execute(
-                "SELECT nombre, tipo_dispositivo, id_estado, id_configuracion FROM dispositivo WHERE id_dispositivo=?",
+                "SELECT * FROM Dispositivo WHERE id_dispositivo=?",
                 (id_dispositivo,)
             )
             return cursor.fetchone()
-
-    def actualizar_dispositivo(self, id_dispositivo: int, nombre: str = None, tipo: str = None):
+        
+    def actualizar_dispositivo(self, id_dispositivo, nombre=None, tipo=None):
         with DBConnection() as cursor:
             if nombre:
-                cursor.execute("UPDATE dispositivo SET nombre=? WHERE id_dispositivo=?", (nombre, id_dispositivo))
+                cursor.execute("UPDATE Dispositivo SET nombre=? WHERE id_dispositivo=?", (nombre, id_dispositivo))
             if tipo:
-                cursor.execute("UPDATE dispositivo SET tipo_dispositivo=? WHERE id_dispositivo=?", (tipo, id_dispositivo))
+                cursor.execute("UPDATE Dispositivo SET tipo_dispositivo=? WHERE id_dispositivo=?", (tipo, id_dispositivo))
 
-    def eliminar_dispositivo(self, id_dispositivo: int):
+    def eliminar_dispositivo(self, id_dispositivo):
         with DBConnection() as cursor:
-            cursor.execute("DELETE FROM dispositivo WHERE id_dispositivo=?", (id_dispositivo,))
+            cursor.execute("DELETE FROM Dispositivo WHERE id_dispositivo=?", (id_dispositivo,))
 
     def obtener_todos_dispositivos(self):
         with DBConnection() as cursor:
-            cursor.execute("SELECT id_dispositivo, nombre, tipo_dispositivo, id_estado, id_configuracion FROM dispositivo")
+            cursor.execute("SELECT * FROM Dispositivo")
             return cursor.fetchall()

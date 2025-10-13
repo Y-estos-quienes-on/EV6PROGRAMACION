@@ -1,7 +1,8 @@
 from datetime import datetime
 
 class EstadoDispositivo:
-    def __init__(self, estado_actual="apagado"):
+    def __init__(self, id_estado=None, estado_actual="apagado"):
+        self.id_estado = id_estado
         self._estado_actual = estado_actual
         self._ultima_actualizacion = datetime.now()
 

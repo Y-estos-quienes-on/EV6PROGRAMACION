@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from dominio.dispositivos.estado_dispositivo import EstadoDispositivo
 
 class IEstadoDispositivoDAO(ABC):
-
     @abstractmethod
     def agregar_estado(self, estado: EstadoDispositivo) -> int:
         pass

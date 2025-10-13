@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from dominio.dispositivos.configuracion_dispositivo import ConfiguracionDispositivo
 
 class IConfiguracionDispositivoDAO(ABC):
-
     @abstractmethod
     def agregar_configuracion(self, config: ConfiguracionDispositivo) -> int:
         pass

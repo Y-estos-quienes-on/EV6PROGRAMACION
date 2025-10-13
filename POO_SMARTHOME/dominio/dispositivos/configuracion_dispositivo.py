@@ -1,7 +1,9 @@
 from datetime import datetime
 
 class ConfiguracionDispositivo:
-    def __init__(self, configuracion="default"):
+    def __init__(self, id_configuracion=None, estado=1, configuracion="default"):
+        self.id_configuracion = id_configuracion
+        self.estado = estado  # 1 = activo, 0 = inactivo
         self._configuracion = configuracion
         self._time_stamp = datetime.now()
 
