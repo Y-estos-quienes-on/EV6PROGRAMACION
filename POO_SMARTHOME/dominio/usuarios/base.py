@@ -38,10 +38,14 @@ class Usuario:
         return self._usuario == usuario and self._contraseña == contraseña
 
     def consultar_datos(self):
+        # Consultamos el consentimiento usando el método actual
+        consentimiento = self.consent_service.obtener_consentimiento(self.usuario)
+        acepto = "Aceptado" if consentimiento else "No acepto"
         return {
             "usuario": self._usuario,
             "email": self._email,
-            "rol": self._rol
+            "rol": self._rol,
+            "consentimiento_privacidad": acepto
         }
 
     def cambiar_contraseña(self, nueva_contraseña):

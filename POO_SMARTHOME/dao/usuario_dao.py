@@ -6,10 +6,7 @@ from conn.conn_db import DBConnection
 
 class UsuarioDAO(IUsuarioDAO):
     def __init__(self):
-        """
-        No crea tabla porque ya existe en la BD.
-        Solo verifica la conexión.
-        """
+        
         try:
             with DBConnection() as cursor:
                 cursor.execute("SELECT COUNT(*) FROM Usuario")
@@ -19,7 +16,7 @@ class UsuarioDAO(IUsuarioDAO):
             raise
 
     def agregar_usuario(self, usuario: Usuario):
-        """Inserta un nuevo usuario en la BD."""
+       
         try:
             with DBConnection() as cursor:
                 cursor.execute(
@@ -31,7 +28,7 @@ class UsuarioDAO(IUsuarioDAO):
             raise
 
     def obtener_usuario(self, usuario_nombre: str) -> Usuario:
-        """Obtiene un usuario por nombre."""
+        
         try:
             with DBConnection() as cursor:
                 cursor.execute(
@@ -63,7 +60,7 @@ class UsuarioDAO(IUsuarioDAO):
             raise
 
     def eliminar_usuario(self, usuario: Usuario):
-        """Elimina un usuario de la BD."""
+        
         try:
             with DBConnection() as cursor:
                 cursor.execute(
