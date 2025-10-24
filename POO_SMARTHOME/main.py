@@ -14,7 +14,7 @@ def main():
         print("Creando usuario admin por defecto")
         resultado = usuario_service.registrar_usuario("admin", "admin@gmail.com", "admin123", rol="admin")
         admin, _ = usuario_service.buscar_usuario("admin")
-        consent_service.registrar(admin.id_usuario, True)
+        consent_service.registrar_consentimiento(usuario.id_usuario, True)
         print("Usuario admin creado con usuario='admin' y contraseña='admin123'")
 
     # Login y menú principal
@@ -47,7 +47,7 @@ def main():
             resultado = usuario_service.registrar_usuario(nombre, email, contraseña, rol=rol)
             print(resultado)
             usuario, _ = usuario_service.buscar_usuario(nombre)
-            consent_service.registrar(usuario.id_usuario, True)
+            consent_service.registrar_consentimiento(usuario.id_usuario, True)
             print("Consentimiento registrado.")
 
         elif opcion == "2":

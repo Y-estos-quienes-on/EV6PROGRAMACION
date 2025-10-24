@@ -1,27 +1,39 @@
-import sqlite3
 import mysql.connector
-
-DB_TYPE = "sqlite"
-MYSQL_CONFIG = {
-    "host": "localhost",
-    "user": "root",
-    "password": "1234",
-    "database": "SmartHome"
-}
-SQLITE_NAME = "app.db"
+from mysql.connector import Error
 
 class DBConnection:
+    def __init__(self, host="localhost", user="root", password="root", database="SmartHome"):
+        self.host = host
+        self.user = user
+        self.password = password
+        self.database = database
+        self.conn = None
+        self.cursor = None
+
     def __enter__(self):
-        if DB_TYPE == "mysql":
-            self.conn = mysql.connector.connect(**MYSQL_CONFIG)
-            self.cursor = self.conn.cursor(dictionary=True)
-        else:
-            self.conn = sqlite3.connect(SQLITE_NAME)
-            self.conn.row_factory = sqlite3.Row
-            self.cursor = self.conn.cursor()
-        return self.cursor
+        try:
+            self.conn = mysql.connector.connect(
+                host=self.host,
+                user=self.user,
+                password=self.password,
+                database=self.database,
+                autocommit=False
+            )
+            self.cursor = self.conn.cursor(buffered=True)
+            return self.cursor
+        except Error as e:
+            print(f"Error al conectar a MySQL: {e}")
+            raise
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if exc_type is None:
-            self.conn.commit()
-        self.conn.close()
+        try:
+            if self.cursor:
+                self.cursor.close()
+            if self.conn and self.conn.is_connected():
+                if exc_type is None:
+                    self.conn.commit()
+                else:
+                    self.conn.rollback()
+                self.conn.close()
+        except Error as e:
+            print(f"Error al cerrar conexión: {e}")
