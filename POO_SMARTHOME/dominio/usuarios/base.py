@@ -4,7 +4,7 @@ class Usuario:
     ROLES_VALIDOS = ["general", "admin"]
 
     def __init__(self, id_usuario=None, usuario="", email="", contraseña="", rol="general"):
-        self.id_usuario = id_usuario
+        self._id_usuario = id_usuario
         self._usuario = None
         self._email = None
         self._contraseña = contraseña
@@ -13,6 +13,14 @@ class Usuario:
         self.usuario = usuario
         self.email = email
         self.consent_service = ConsentimientoPrivacidadService()
+
+    @property
+    def id_usuario(self):
+        return self._id_usuario
+
+    @id_usuario.setter
+    def id_usuario(self, valor):
+        self._id_usuario = valor
 
     @property
     def usuario(self):
@@ -53,13 +61,13 @@ class Usuario:
 
     def consultar_datos(self):
         consentimiento = {}
-        if self.id_usuario:
-            consentimiento = self.consent_service.obtener_consentimiento_por_id(self.id_usuario)
+        if self._id_usuario:
+            consentimiento = self.consent_service.obtener_consentimiento_por_id(self._id_usuario)
         acepto = "Aceptado" if consentimiento.get("acepta_politicas") else "No acepto"
         fecha = consentimiento.get("fecha", "-")
 
         return {
-            "id_usuario": self.id_usuario,
+            "id_usuario": self._id_usuario,
             "usuario": self._usuario,
             "email": self._email,
             "rol": self._rol,

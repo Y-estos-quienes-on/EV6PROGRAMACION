@@ -1,11 +1,28 @@
 from datetime import datetime
 
+
 class ConsentimientoPrivacidad:
     def __init__(self, id_consentimiento=None, id_usuario=None, aceptado=False, fecha=None):
-        self.id_consentimiento = id_consentimiento
-        self.id_usuario = id_usuario  # Vinculado con Usuario.id_usuario
+        self._id_consentimiento = id_consentimiento
+        self._id_usuario = id_usuario
         self._aceptado = aceptado
         self._fecha = fecha if fecha else datetime.now()
+
+    @property
+    def id_consentimiento(self):
+        return self._id_consentimiento
+
+    @id_consentimiento.setter
+    def id_consentimiento(self, valor):
+        self._id_consentimiento = valor
+
+    @property
+    def id_usuario(self):
+        return self._id_usuario
+
+    @id_usuario.setter
+    def id_usuario(self, valor):
+        self._id_usuario = valor
 
     @property
     def aceptado(self):
@@ -21,5 +38,5 @@ class ConsentimientoPrivacidad:
         return self._fecha
 
     def formato_mysql(self):
-        #Formato de MySQL
+        """Formato de MySQL"""
         return self._fecha.strftime('%Y-%m-%d %H:%M:%S')

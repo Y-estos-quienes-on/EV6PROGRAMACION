@@ -1,13 +1,22 @@
 from dominio.dispositivos.estado_dispositivo import EstadoDispositivo
 from dominio.dispositivos.configuracion_dispositivo import ConfiguracionDispositivo
 
+
 class Dispositivo:
     def __init__(self, id_dispositivo=None, nombre="", tipo_dispositivo="", estado=None, configuracion=None):
-        self.id_dispositivo = id_dispositivo
+        self._id_dispositivo = id_dispositivo
         self._nombre = nombre
         self._tipo_dispositivo = tipo_dispositivo
         self._estado = estado if estado else EstadoDispositivo()
         self._configuracion = configuracion if configuracion else ConfiguracionDispositivo()
+
+    @property
+    def id_dispositivo(self):
+        return self._id_dispositivo
+
+    @id_dispositivo.setter
+    def id_dispositivo(self, valor):
+        self._id_dispositivo = valor
 
     @property
     def nombre(self):
