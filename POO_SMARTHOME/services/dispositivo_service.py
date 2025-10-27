@@ -13,23 +13,36 @@ class DispositivoService:
         self.dispositivo_dao = DispositivoDAO()
 
     def registrar_dispositivo(self, nombre, tipo):
-        estado = EstadoDispositivo()
+
+        estado = EstadoDispositivo(estado_actual="Apagado")
         id_estado = self.estado_dao.agregar_estado(estado)
 
-        configuracion = ConfiguracionDispositivo()
+        configuracion = ConfiguracionDispositivo(configuracion="{}")
         id_config = self.config_dao.agregar_configuracion(configuracion)
 
-        dispositivo = Dispositivo(nombre, tipo, None, None)
-        id_dispositivo = self.dispositivo_dao.agregar_dispositivo(dispositivo, id_estado, id_config)
+        dispositivo = Dispositivo(
+            nombre=nombre,
+            tipo_dispositivo=tipo,
+            estado=id_estado,
+            configuracion=id_config
+        )
 
-        return f"Dispositivo '{nombre}' agregado con ID {id_dispositivo}."
+        id_dispositivo = self.dispositivo_dao.agregar_dispositivo(
+            dispositivo,
+            id_estado,
+            id_config
+        )
+
+        return f"Dispositivo '{nombre}' (tipo: {tipo}) agregado con ID {id_dispositivo}."
 
     def listar_dispositivos(self):
+
         dispositivos = []
         filas = self.dispositivo_dao.obtener_todos_dispositivos()
 
         for fila in filas:
             id_disp, nombre, tipo, id_estado, id_config = fila
+
             estado = self.estado_dao.obtener_estado(id_estado)
             config = self.config_dao.obtener_configuracion(id_config)
 
@@ -39,7 +52,7 @@ class DispositivoService:
                 "tipo": tipo,
                 "estado": estado["estado_actual"] if estado else "Desconocido",
                 "ultima_actualizacion": estado["ultima_actualizacion"] if estado else "-",
-                "configuracion": config["configuracion"] if config else "Sin config",
+                "configuracion": config["configuracion"] if config else "Sin configuración",
                 "timestamp": config["time_stamp"] if config else "-"
             })
 
@@ -64,10 +77,7 @@ class DispositivoService:
             self.config_dao.actualizar_configuracion(id_config, configuracion)
 
         return "Dispositivo actualizado correctamente."
-
-
-
-
+    
     def eliminar_dispositivo(self, id_dispositivo):
         fila = self.dispositivo_dao.obtener_dispositivo(id_dispositivo)
         if not fila:
@@ -76,8 +86,10 @@ class DispositivoService:
         id_estado = fila[3]
         id_config = fila[4]
 
+   
+        self.dispositivo_dao.eliminar_dispositivo(id_dispositivo)
+
         self.estado_dao.eliminar_estado(id_estado)
         self.config_dao.eliminar_configuracion(id_config)
-        self.dispositivo_dao.eliminar_dispositivo(id_dispositivo)
 
         return f"Dispositivo con ID {id_dispositivo} eliminado correctamente."
